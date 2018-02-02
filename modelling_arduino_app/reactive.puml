@@ -1,0 +1,57 @@
+@startuml
+skinparam nodesep 75
+skinparam ranksep 40
+
+class App {
+  + String name
+}
+
+class Actuator {
+  + String name
+  + int pin
+}
+
+class Producer {
+  + String name
+  + boolean value
+}
+
+class Consumer {
+  + String name
+}
+
+class Register {
+  + String name
+  + bool value
+}
+
+abstract class Action
+
+class SetActuator {
+  + SIGNAL value
+}
+
+class SetRegister {
+  + bool value
+}
+
+enum SIGNAL {
+    HIGH
+    LOW
+}
+
+Action <|-- SetActuator
+Action <|-- SetRegister
+
+App *--> "1..*\nproducers" Producer
+App *--> "1..*\nactuators" Actuator
+App *--> "1..*\nconsumers" Consumer
+Producer -right-> "1..*\ntargets" Consumer
+Consumer *-> "1..*\n{ordered}\nbehavior" Action
+Consumer *--> "0..*\nmemory" Register
+SetActuator --> "1\ntarget" Actuator
+SetRegister --> "1\ntarget" Register
+Action --> "0..1\nguard" Register
+
+
+@enduml
